@@ -9,8 +9,9 @@ Page({
   },
 
   openDetail: function (event) {
+    var postId = event.currentTarget.dataset.postid;
     wx.navigateTo({
-      url: 'post-detail/post-detail'
+      url: 'post-detail/post-detail?post_id=' + postId
     })
   },
 
@@ -27,28 +28,28 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-    console.log("onready")
+    
   },
 
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    console.log("onshow")
+    
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-    console.log("onhide")
+    
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-    console.log("onunload")
+    
   },
 
   /**
