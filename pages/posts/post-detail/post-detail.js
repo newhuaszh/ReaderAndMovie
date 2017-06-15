@@ -5,7 +5,23 @@ Page({
    * 页面的初始数据
    */
   data: {
+    isPlayMusic: false
+  },
 
+  onAutioTap: function (event) {
+    this.setData({
+      isPlayMusic: !this.data.isPlayMusic
+    });
+    if (this.data.isPlayMusic) {
+      wx.playBackgroundAudio({
+        dataUrl: this.data.detail.music.url,
+        title: this.data.detail.music.title,
+        coverImgUrl: this.data.detail.music.coverImg
+      })
+    }
+    else {
+      wx.stopBackgroundAudio();
+    }
   },
 
   onCollectTap: function (event) {
@@ -16,14 +32,27 @@ Page({
     this.setData({
       collected: collectTmp
     });
-    // wx.showToast({
-    //   title: collectTmp ? "收藏成功" : "取消成功",
-    //   duration: 1000,
-    //   icon: "success"
-    // })
-    wx.showModal({
-      title: '标题',
-      content: '内容',
+    wx.showToast({
+      title: collectTmp ? "收藏成功" : "取消成功",
+      duration: 1000,
+      icon: "success"
+    })
+  },
+
+  onShareTap: function (event) {
+    wx.showActionSheet({
+      itemList: [
+        "分享到微信好友",
+        "分享到朋友圈",
+        "分享到QQ",
+        "分享到微博",
+      ],
+      itemColor: "#405f80",
+      success: function (res) {
+        wx.showToast({
+          title: res.tapIndex.toString(),
+        })
+      }
     })
   },
 
@@ -33,7 +62,23 @@ Page({
   onLoad: function (options) {
     var postId = options.post_id;
     this.setData({
-      detail: postList.postList[postId]
+      detail: postList.postList[postId],
+    });
+    // 判断音乐状态
+    var _this = this;
+    wx.getBackgroundAudioPlayerState({
+      success: function (res) {
+        var music;
+        if (res.status == 1 && res.dataUrl == _this.data.detail.music.url) {
+          music = true;
+        }
+        else {
+          music = false;
+        }
+        _this.setData({
+          isPlayMusic: music
+        });
+      }
     });
     var postCollected = wx.getStorageSync('post_collected');
     if (postCollected) {
